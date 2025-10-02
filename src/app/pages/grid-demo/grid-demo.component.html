@@ -1,0 +1,46 @@
+<igx-grid [data]="northwindSwaggerCustomerDto" primaryKey="customerId" [allowFiltering]="true" filterMode="excelStyleFilter" class="grid"> 
+  <igx-column field="customerId" dataType="string" header="customerId" [filterable]="true" [sortable]="true" [selectable]="false"></igx-column> 
+  <igx-column field="companyName" dataType="string" header="companyName" [filterable]="true" [sortable]="true" required="true" [maxlength]="100" [selectable]="false"></igx-column> 
+  <igx-column field="contactName" dataType="string" header="contactName" [filterable]="true" [sortable]="true" [maxlength]="50" [selectable]="false"></igx-column>
+
+  <ng-template igxGridDetail let-rowData>
+    <ng-container *ngIf="getOrders(rowData.customerId) | async as orders">
+
+      <div class="row-layout group">
+          <igx-simple-combo
+            type="border"
+            [data]="orders"
+            displayKey="orderId"
+            (selectionChanging)="onOrderSelectionChange(rowData.customerId, $event.newValue)"
+            class="single-select-combo">
+            <label igxLabel>Order Id</label>
+          </igx-simple-combo>
+        </div>
+    </ng-container>
+
+    <div *ngIf="getSelectedOrder(rowData.customerId) as selectedOrder" class="column-layout group_1"> 
+        <h6 class="h6">Order Details</h6> 
+        <div class="row-layout group_2"> 
+          <div class="column-layout group_3">
+            <div class="row-layout group_4"><p class="text">Completed</p></div> 
+            <div class="row-layout group_4"><p class="text">Shipper</p></div> 
+            <div class="row-layout group_4"><p class="text">Order Date</p></div> 
+
+            <div class="row-layout group_4"><p class="text">Country</p></div> 
+            <div class="row-layout group_4"><p class="text">City</p></div> 
+            <div class="row-layout group_4"><p class="text">Street</p></div> 
+            <div class="row-layout group_5"><p class="text">Postal Code</p></div> 
+          </div> 
+        <div class="column-layout group_6"> 
+          <div class="row-layout group_7"><igx-checkbox [checked]="!!selectedOrder?.completed" class="checkbox"></igx-checkbox></div> 
+          <div class="row-layout group_4"><p class="text">{{ selectedOrder?.shipperId }}</p></div> 
+          <div class="row-layout group_4"><p class="text">{{ selectedOrder?.orderDate }}</p></div> 
+          <div class="row-layout group_4"><p class="text">{{ selectedOrder?.shipAddress?.country }}</p></div> 
+          <div class="row-layout group_4"><p class="text">{{ selectedOrder?.shipAddress?.city }}</p></div> 
+          <div class="row-layout group_4"><p class="text">{{ selectedOrder?.shipAddress?.street }}</p></div> 
+          <div class="row-layout group_5"><p class="text_1">{{ selectedOrder?.shipAddress?.postalCode }}</p></div> 
+        </div> 
+      </div> 
+    </div> 
+  </ng-template>
+</igx-grid>
